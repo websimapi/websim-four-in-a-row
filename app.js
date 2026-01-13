@@ -6,9 +6,15 @@ const DEFAULT_ROWS = 6;
 const root = document.getElementById('boardContainer');
 const turnEl = document.getElementById('turnIndicator');
 const restartBtn = document.getElementById('restart');
+const replayBtn = document.getElementById('replayBtn');
+const replayArea = document.getElementById('replayArea');
 
 let cols = DEFAULT_COLS, rows = DEFAULT_ROWS;
 let game = createGame(cols, rows);
+
+// moves log (sequence of drops) exported as JSON for remotion playback
+// each entry: {col, row, player}
+window.GAME_RECORD = [];
 
 function buildBoard(cols, rows){
   root.innerHTML = '';
@@ -101,6 +107,8 @@ function highlightWinning(){
 function handleColumnClick(col){
   const res = game.drop(col);
   if(res.ok){
+    // push to record for replay
+    window.GAME_RECORD.push({col: res.col, row: res.row, player: res.player});
     animateDrop(res.col, res.row, res.player).then(()=>render());
   } else {
     // invalid (full) - small shake
@@ -149,9 +157,21 @@ function shakeColumn(col){
 
 restartBtn.addEventListener('click', ()=>{
   game.reset();
+  window.GAME_RECORD = [];
   // clear inline styles from discs
   root.querySelectorAll('.disc').forEach(d=>{ d.style.boxShadow=''; d.style.transform='translateY(-8px)'; });
   render();
+});
+
+replayBtn.addEventListener('click', ()=>{
+  // prepare a shallow copy of the game record
+  const record = window.GAME_RECORD.slice();
+  // if no moves, do nothing
+  if(record.length===0) return;
+  // show replay area and call remotion player starter
+  replayArea.style.display = 'block';
+  // call global function exposed by remotion_player.js to mount a Player with computed duration
+  if(window.startRemotionReplay) window.startRemotionReplay(record);
 });
 
 // initialize
