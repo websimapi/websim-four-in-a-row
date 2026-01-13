@@ -14,6 +14,9 @@ function buildBoard(cols, rows){
   root.innerHTML = '';
   const boardWrap = document.createElement('div');
   boardWrap.className = 'board';
+  // expose rows/cols to CSS so the board can compute an appropriate --cell-size that fits the viewport
+  boardWrap.style.setProperty('--rows', rows);
+  boardWrap.style.setProperty('--cols', cols);
   // set grid template
   boardWrap.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
   boardWrap.style.gridTemplateRows = `repeat(${rows}, var(--cell-size))`;
