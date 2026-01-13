@@ -1,0 +1,77 @@
+:root{
+  --bg: #f6f5f3;
+  --panel: #ffffff;
+  --grid-bg: #0b6aa8;
+  --cell-size: calc((100vh - 110px) / 6); /* fits typical 6 rows; shrinks on small screens */
+  --cell-gap: 6px;
+  --p1: #e34a4a;
+  --p2: #f2c94c;
+  --shadow: rgba(10,10,10,0.08);
+}
+
+*{box-sizing:border-box}
+html,body,#app{height:100%;margin:0;background:var(--bg);font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+#app{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:12px;gap:12px;min-height:100vh}
+
+/* Controls row */
+#controls{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+#turnIndicator{background:var(--panel);padding:8px 12px;border-radius:10px;box-shadow:0 2px 6px var(--shadow);min-width:140px;text-align:center;font-weight:600}
+#restart{background:#0b6aa8;color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:600;min-height:44px;min-width:88px}
+
+/* Board */
+#boardContainer{background:transparent;display:flex;align-items:center;justify-content:center;width:100%;max-width:480px}
+.board{
+  background:var(--grid-bg);
+  padding:var(--cell-gap);
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.12);
+  display:grid;
+  gap:var(--cell-gap);
+  touch-action: manipulation;
+}
+
+/* will be set dynamically for columns/rows */
+.cell{
+  width:var(--cell-size);
+  height:var(--cell-size);
+  background:transparent;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.hole{
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+}
+.disc{
+  width: 86%;
+  height: 86%;
+  border-radius:50%;
+  background:transparent;
+  transform: translateY(-8px);
+  transition: transform 260ms cubic-bezier(.2,.9,.3,1), background-color 160ms;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.22), inset 0 -6px 14px rgba(255,255,255,0.04);
+}
+.disc.empty{background:transparent;box-shadow:none}
+.disc.p1{background:var(--p1)}
+.disc.p2{background:var(--p2)}
+
+.overlay{
+  position:absolute;inset:0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px;pointer-events:none
+}
+
+.footerNote{font-size:12px;color:#666;text-align:center;margin-top:6px}
+
+/* Responsive sizing: ensure whole board fits in one screen height */
+@media (max-height:640px){
+  :root{--cell-size:calc((100vh - 110px) / 8)}
+}
